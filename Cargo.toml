@@ -1,0 +1,11 @@
+[package]
+name = "keepawake"
+version = "0.1.0"
+edition = "2021"
+description = "Moves the mouse slightly to prevent Windows from sleeping. Tray icon to enable/disable."
+
+[dependencies]
+windows = { version = "0.58", features = ["Win32_UI_WindowsAndMessaging", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_System_Power", "Win32_System_SystemInformation"] }
+tray-icon = "0.21"
+tao = "0.28"
+rand = "0.8"
