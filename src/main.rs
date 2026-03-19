@@ -12,9 +12,7 @@ use std::time::Duration;
 
 use rand::Rng;
 use tao::event_loop::{ControlFlow, EventLoopBuilder};
-use tray_icon::menu::{
-    Icon as MenuIcon, IconMenuItemBuilder, Menu, MenuEvent, MenuId, MenuItemBuilder,
-};
+use tray_icon::menu::{Icon as MenuIcon, IconMenuItemBuilder, Menu, MenuEvent, MenuId};
 use tray_icon::{Icon, TrayIconBuilder};
 use windows::Win32::System::Power::{
     SetThreadExecutionState, ES_CONTINUOUS, ES_DISPLAY_REQUIRED, ES_SYSTEM_REQUIRED,
@@ -221,7 +219,28 @@ fn main() {
             return;
         }
     };
+    let on_menu_icon = match make_menu_icon_color(80, 180, 100) {
+        Ok(i) => i,
+        Err(_) => {
+            eprintln!("Failed to create menu icon");
+            return;
+        }
+    };
     let away_menu_icon = match make_menu_icon_color(255, 210, 40) {
+        Ok(i) => i,
+        Err(_) => {
+            eprintln!("Failed to create menu icon");
+            return;
+        }
+    };
+    let off_menu_icon = match make_menu_icon_color(115, 115, 138) {
+        Ok(i) => i,
+        Err(_) => {
+            eprintln!("Failed to create menu icon");
+            return;
+        }
+    };
+    let exit_menu_icon = match make_menu_icon_color(215, 80, 80) {
         Ok(i) => i,
         Err(_) => {
             eprintln!("Failed to create menu icon");
@@ -236,10 +255,11 @@ fn main() {
     let id_quit = MenuId::new("quit");
 
     // Keep menu items alive for the lifetime of the tray (required on Windows).
-    let item_on = MenuItemBuilder::new()
+    let item_on = IconMenuItemBuilder::new()
         .text("Turn on")
         .id(id_enable.clone())
         .enabled(true)
+        .icon(Some(on_menu_icon))
         .build();
     let item_away = IconMenuItemBuilder::new()
         .text("Away")
@@ -247,15 +267,17 @@ fn main() {
         .enabled(true)
         .icon(Some(away_menu_icon))
         .build();
-    let item_off = MenuItemBuilder::new()
+    let item_off = IconMenuItemBuilder::new()
         .text("Turn off")
         .id(id_disable.clone())
         .enabled(true)
+        .icon(Some(off_menu_icon))
         .build();
-    let item_exit = MenuItemBuilder::new()
+    let item_exit = IconMenuItemBuilder::new()
         .text("Exit")
         .id(id_quit.clone())
         .enabled(true)
+        .icon(Some(exit_menu_icon))
         .build();
 
     menu.append(&item_on).unwrap();
